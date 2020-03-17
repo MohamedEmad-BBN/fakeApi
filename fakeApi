@@ -1,0 +1,1212 @@
+{
+  "header": 
+    {
+      "html": '
+      
+      <header class="header" appFixedHeader offset="150">
+    <div class="container d-flex">
+
+        <!--header__firstSide-->
+        <div class="header__firstSide">
+          <a routerLink="/{{language['LANGUAGE_CODE']}}" class="header__logo">
+            <img *ngIf="logo$ | async as logo" [lazyLoad]="logo" alt="websiteLogo">
+          </a>
+        </div>
+        <!--header__firstSide-->
+
+        <!--header__secondSide-->
+        <div class="header__secondSide">
+
+              <!--header__top-->
+              <div class="header__top">
+                    <!--header__userLinks-->
+                    <div class="header__userLinks" appClosest>
+                        <button class="custom-button custom-button--nested">
+                            <svg class="svg-icon" viewBox="0 0 20 20">
+                                <path d="M10,10.9c2.373,0,4.303-1.932,4.303-4.306c0-2.372-1.93-4.302-4.303-4.302S5.696,4.223,5.696,6.594C5.696,8.969,7.627,10.9,10,10.9z M10,3.331c1.801,0,3.266,1.463,3.266,3.263c0,1.802-1.465,3.267-3.266,3.267c-1.8,0-3.265-1.465-3.265-3.267C6.735,4.794,8.2,3.331,10,3.331z"></path>
+                                <path  d="M10,12.503c-4.418,0-7.878,2.058-7.878,4.685c0,0.288,0.231,0.52,0.52,0.52c0.287,0,0.519-0.231,0.519-0.52c0-1.976,3.132-3.646,6.84-3.646c3.707,0,6.838,1.671,6.838,3.646c0,0.288,0.234,0.52,0.521,0.52s0.52-0.231,0.52-0.52C17.879,14.561,14.418,12.503,10,12.503z"></path>
+                            </svg>
+                        </button>
+                        <ul class="userMenu">
+
+                            <li class="userMenu__userList" *ngIf="wishListFeature$ | async">
+                                <a  routerLink="/{{language['LANGUAGE_CODE']}}/wish-list"
+                                 class="userMenu__userLink">{{language['wishList']}}</a>
+                            </li>
+                            
+                            <li class="userMenu__userList" *ngIf="compareFeature$ | async">
+                                <a 
+                                routerLink="/{{language['LANGUAGE_CODE']}}/compare" 
+                                class="userMenu__userLink">{{language['compare']}}</a>
+                            </li>
+
+                            <ng-container *ngIf="logged$ | async; else login">
+                                <li class="userMenu__userList">
+                                    <a [routerLink]="['/', language['LANGUAGE_CODE'], 'profile', 'dashboard']"
+                                     class="userMenu__userLink">{{userName | async}}</a>
+                                </li>
+                                <li class="userMenu__userList">
+                                    <a [routerLink]="['/accounts/login']" (click)="logout()"
+                                     class="userMenu__userLink">{{language['logout']}}</a>
+                                </li>
+                            </ng-container>
+                            
+                            <ng-template #login>
+
+                            <li class="userMenu__userList">
+                                <a routerLink="/{{language['LANGUAGE_CODE']}}/accounts/login"
+                                 class="userMenu__userLink">{{language['login']}}</a>
+                            </li>
+                            <li class="userMenu__userList">
+                                <a routerLink="/{{language['LANGUAGE_CODE']}}/accounts/sign-up" class="userMenu__userLink">{{language['register']}}</a>
+                            </li>
+
+                            </ng-template>
+
+
+                        </ul>
+                    </div>
+                    <!--header__userLinks-->
+
+                    <!--header__search-->
+                   <app-search></app-search>
+                    <!--header__search-->
+              </div>
+              <!--header__top-->
+
+              <!--main navigation-->
+              <div class="header__mainNavigation">
+
+                <button class="custom-button custom-button--responsiveButton" (click)="openSide($event);$event.stopPropagation();" #sideButton>
+                    <svg class="svg-icon" viewBox="0 0 20 20">
+                        <path d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314
+                            c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743
+                            s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314
+                            c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path>
+                    </svg>
+                </button>
+
+                <!--blackLayer-->
+                <div class="blackLayer" [ngClass]="{'active' : openSideMenu}" (click)="openSide($event);$event.stopPropagation();" #sideLayer>
+                    <div class="menu-container">
+                        <!--primary menu-->
+                        <ul class="header__primaryMenu">
+
+                            <li class="header__primaryMenu__list has-child"  appToggleActiveSame >
+                                <a (click)="openSide($event);$event.stopPropagation();"
+                                      routerLink="/{{language['LANGUAGE_CODE']}}/collection" 
+                                      class="header__primaryMenu__link">
+                                {{language['allCategories']}}
+                                </a>
+
+                                <ng-container *ngIf="taxons?.length">
+                                    <!--drop down first level-->
+                                    <ul class="dropdown">
+                                        <ng-container *ngFor="let taxon of taxons">
+
+                                            <!--taxon  have  children-->
+                                            <ng-container *ngIf="taxon.children">
+                                                <li class="dropdown__item has-child " appToggleActiveSame>
+                                                    <a 
+                                                         (click)="openSide($event);$event.stopPropagation();"
+                                                        routerLink="/{{language['LANGUAGE_CODE']}}/collection"
+                                                        [queryParams]="{taxons: taxon.code}" class="dropdown__link"
+                                                        (click)="$event.stopPropagation()"
+                                                        >
+                                                        {{taxon | translate: 'name'}}
+                                                    </a>
+
+                                                    <!--drop down second level-->
+                                                    <ul class="dropdown">
+                                                            <ng-container *ngFor="let child of taxon.children">
+
+                                                                <!--if child have a child third level-->
+                                                                <ng-container *ngIf="child.children?.length">
+                                                                    <li class="dropdown__item has-child" appToggleActiveSame>
+                                                                        <a (click)="openSide($event);$event.stopPropagation();" routerLink="/{{language['LANGUAGE_CODE']}}/collection" (click)="$event.stopPropagation()"
+                                                                        [queryParams]="{taxons: child.code}" class="dropdown__link">{{child | translate: 'name'}}</a>
+                                                                        <ul class="dropdown">
+                                                                            <li class="dropdown__item" *ngFor="let child of child.children">
+                                                                                <a (click)="openSide($event);$event.stopPropagation();" routerLink="/{{language['LANGUAGE_CODE']}}/collection" (click)="$event.stopPropagation()"
+                                                                                [queryParams]="{taxons: child.code}" class="dropdown__link">{{child | translate: 'name'}}</a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </li>
+                                                                </ng-container>
+                                                                <!--if child have a child level-->
+
+                                                                <!--if child don't have a child-->
+                                                                <ng-container *ngIf="!child.children?.length">
+                                                                    <li class="dropdown__item">
+                                                                        <a (click)="openSide($event);$event.stopPropagation();" routerLink="/{{language['LANGUAGE_CODE']}}/collection" (click)="$event.stopPropagation()"
+                                                                        [queryParams]="{taxons: child.code}" class="dropdown__link">{{child | translate: 'name'}}</a>
+                                                                    </li>
+                                                                </ng-container>
+                                                                <!--if child don't have a child-->
+                                                                
+                                                            </ng-container>
+                                                           
+                                                    </ul>
+                                                    <!--drop down second level-->
+
+                                                </li>
+                                            </ng-container>
+                                            <!--taxon  have  children-->
+
+
+                                            <!--taxon don't have any children-->
+                                            <ng-container *ngIf="!taxon.children">
+                                                <li class="dropdown__item">
+                                                    <a     (click)="openSide($event);$event.stopPropagation();" routerLink="/{{language['LANGUAGE_CODE']}}/collection"
+                                                    [queryParams]="{taxons: taxon.code}" (click)="$event.stopPropagation()" class="dropdown__link">{{ taxon.name }}</a>
+                                                </li>
+                                            </ng-container>
+                                            <!--taxon don't have any children-->
+
+
+                                        </ng-container>
+                                    </ul>
+                                    <!--drop down first level-->
+                                </ng-container>
+
+                            </li>
+
+                            <!--static pages-->
+                            <ng-container *ngIf="staticPages?.length">
+                                <ng-container *ngFor="let staticPage of staticPages">
+                                    <li class="header__primaryMenu__list" >
+                                        <a
+                                        (click)="openSide($event);$event.stopPropagation();;$event.stopPropagation();"
+                                        [routerLink]="['/', language['LANGUAGE_CODE'], 'page', staticPage.code]" 
+                                        class="header__primaryMenu__link"
+                                         routerLinkActive="active">
+                                        {{staticPage | translate:'name'}}
+                                        </a>
+                                    </li>
+                                </ng-container>
+                            </ng-container>
+                            <!--static pages-->
+                          
+                        </ul>
+                        <!--primary menu-->
+
+                    </div>
+                </div>
+                <!--blackLayer-->
+
+                <!--secondary menu cart - setting -->
+                <ul class="secondary-menu">
+                    <li class="secondary-menu__item site-setting" appClosest>
+                        <svg class="secondary-menu__icon svg-icon" viewBox="0 0 20 20">
+                                <path d="M10.032,8.367c-1.112,0-2.016,0.905-2.016,2.018c0,1.111,0.904,2.014,2.016,2.014c1.111,0,2.014-0.902,2.014-2.014C12.046,9.271,11.143,8.367,10.032,8.367z M10.032,11.336c-0.525,0-0.953-0.427-0.953-0.951c0-0.526,0.427-0.955,0.953-0.955c0.524,0,0.951,0.429,0.951,0.955C10.982,10.909,10.556,11.336,10.032,11.336z"></path>
+                                <path  d="M17.279,8.257h-0.785c-0.107-0.322-0.237-0.635-0.391-0.938l0.555-0.556c0.208-0.208,0.208-0.544,0-0.751l-2.254-2.257c-0.199-0.2-0.552-0.2-0.752,0l-0.556,0.557c-0.304-0.153-0.617-0.284-0.939-0.392V3.135c0-0.294-0.236-0.532-0.531-0.532H8.435c-0.293,0-0.531,0.237-0.531,0.532v0.784C7.582,4.027,7.269,4.158,6.966,4.311L6.409,3.754c-0.1-0.1-0.234-0.155-0.376-0.155c-0.141,0-0.275,0.055-0.375,0.155L3.403,6.011c-0.208,0.207-0.208,0.543,0,0.751l0.556,0.556C3.804,7.622,3.673,7.935,3.567,8.257H2.782c-0.294,0-0.531,0.238-0.531,0.531v3.19c0,0.295,0.237,0.531,0.531,0.531h0.787c0.105,0.318,0.236,0.631,0.391,0.938l-0.556,0.559c-0.208,0.207-0.208,0.545,0,0.752l2.254,2.254c0.208,0.207,0.544,0.207,0.751,0l0.558-0.559c0.303,0.154,0.616,0.285,0.938,0.391v0.787c0,0.293,0.238,0.531,0.531,0.531h3.191c0.295,0,0.531-0.238,0.531-0.531v-0.787c0.322-0.105,0.636-0.236,0.938-0.391l0.56,0.559c0.208,0.205,0.546,0.207,0.752,0l2.252-2.254c0.208-0.207,0.208-0.545,0.002-0.752l-0.559-0.559c0.153-0.303,0.285-0.615,0.389-0.938h0.789c0.295,0,0.532-0.236,0.532-0.531v-3.19C17.812,8.495,17.574,8.257,17.279,8.257z M16.747,11.447h-0.653c-0.241,0-0.453,0.164-0.514,0.398c-0.129,0.496-0.329,0.977-0.594,1.426c-0.121,0.209-0.089,0.473,0.083,0.645l0.463,0.465l-1.502,1.504l-0.465-0.463c-0.174-0.174-0.438-0.207-0.646-0.082c-0.447,0.262-0.927,0.463-1.427,0.594c-0.234,0.061-0.397,0.271-0.397,0.514V17.1H8.967v-0.652c0-0.242-0.164-0.453-0.397-0.514c-0.5-0.131-0.98-0.332-1.428-0.594c-0.207-0.123-0.472-0.09-0.646,0.082l-0.463,0.463L4.53,14.381l0.461-0.463c0.169-0.172,0.204-0.434,0.083-0.643c-0.266-0.461-0.467-0.939-0.596-1.43c-0.06-0.234-0.272-0.398-0.514-0.398H3.313V9.319h0.652c0.241,0,0.454-0.162,0.514-0.397c0.131-0.498,0.33-0.979,0.595-1.43c0.122-0.208,0.088-0.473-0.083-0.645L4.53,6.386l1.503-1.504l0.46,0.462c0.173,0.172,0.437,0.204,0.646,0.083c0.45-0.265,0.931-0.464,1.433-0.597c0.233-0.062,0.396-0.274,0.396-0.514V3.667h2.128v0.649c0,0.24,0.161,0.452,0.396,0.514c0.502,0.133,0.982,0.333,1.433,0.597c0.211,0.12,0.475,0.089,0.646-0.083l0.459-0.462l1.504,1.504l-0.463,0.463c-0.17,0.171-0.202,0.438-0.081,0.646c0.263,0.448,0.463,0.928,0.594,1.427c0.061,0.235,0.272,0.397,0.514,0.397h0.651V11.447z"></path>
+                        </svg>
+                        <!--drop down-->
+                        <ul class="dropdown">
+
+                            <!--language-->
+                            <ng-container *ngIf="currentLocale &&  availableLanguages?.length > 1">
+
+                                <p class="dropdown__title">
+                                    <svg class="svg-icon" viewBox="0 0 20 20">
+                                        <path  d="M19.432,7.157c-0.312-1.113-1.624-1.858-3.496-2.17c0.279,0.331,0.532,0.685,0.754,1.06c1.043,0.299,1.748,0.764,1.911,1.344c0.095,0.335,0.014,0.729-0.24,1.169c-0.274,0.476-0.768,1.007-1.455,1.542c0-0.034,0.005-0.067,0.005-0.101c0-3.816-3.094-6.91-6.91-6.91c-3.816,0-6.91,3.094-6.91,6.91c0,1.169,0.293,2.268,0.805,3.232c-1.366-0.277-2.303-0.805-2.495-1.487c-0.094-0.336-0.013-0.729,0.241-1.169c0.138-0.239,0.35-0.496,0.595-0.756c0.011-0.449,0.055-0.89,0.138-1.317c-1.398,1.144-2.112,2.386-1.805,3.476c0.338,1.205,1.845,1.98,3.968,2.24C5.8,15.854,7.774,16.91,10,16.91c3.389,0,6.201-2.44,6.791-5.659C18.735,9.951,19.795,8.448,19.432,7.157 M10,16.047c-1.651,0-3.147-0.664-4.238-1.738c0.147,0.005,0.295,0.008,0.447,0.008c1.502,0,3.195-0.212,4.941-0.658c1.734-0.443,3.297-1.064,4.595-1.776C14.952,14.299,12.682,16.047,10,16.047 M15.998,10.733c-1.27,0.797-2.973,1.554-5.062,2.088c-1.616,0.414-3.251,0.632-4.727,0.632c-0.427,0-0.827-0.025-1.213-0.061C4.338,12.425,3.954,11.258,3.954,10c0-3.339,2.707-6.046,6.046-6.046c3.34,0,6.047,2.708,6.047,6.046C16.047,10.249,16.027,10.492,15.998,10.733"></path>
+                                    </svg>
+                                    <span>lang</span>
+                                </p>
+                                <li class="dropdown__item" *ngFor="let availableLanguage of availableLanguages" (click)="refresh()">
+                                    <a 
+                                    [ngClass]="{activated: availableLanguage.code == language['LANGUAGE_CODE']}"
+                                    [queryParams]="queryParams" 
+                                    [routerLink]="redirectUrls[availableLanguage.code]"
+                                    
+                                    class="dropdown__link">{{availableLanguage.code}}</a>
+                                </li>
+                            </ng-container>
+                            <!--language-->
+
+
+
+
+                            
+                            <p class="dropdown__title">
+                                <svg class="svg-icon" viewBox="0 0 20 20">
+                                    <path  d="M5.229,6.531H4.362c-0.239,0-0.434,0.193-0.434,0.434c0,0.239,0.194,0.434,0.434,0.434h0.868c0.24,0,0.434-0.194,0.434-0.434C5.663,6.724,5.469,6.531,5.229,6.531 M10,6.531c-1.916,0-3.47,1.554-3.47,3.47c0,1.916,1.554,3.47,3.47,3.47c1.916,0,3.47-1.555,3.47-3.47C13.47,8.084,11.916,6.531,10,6.531 M11.4,11.447c-0.071,0.164-0.169,0.299-0.294,0.406c-0.124,0.109-0.27,0.191-0.437,0.248c-0.167,0.057-0.298,0.09-0.492,0.098v0.402h-0.35v-0.402c-0.21-0.004-0.352-0.039-0.527-0.1c-0.175-0.064-0.324-0.154-0.449-0.27c-0.124-0.115-0.221-0.258-0.288-0.428c-0.068-0.17-0.1-0.363-0.096-0.583h0.664c-0.004,0.259,0.052,0.464,0.169,0.613c0.116,0.15,0.259,0.229,0.527,0.236v-1.427c-0.159-0.043-0.268-0.095-0.425-0.156c-0.157-0.061-0.299-0.139-0.425-0.235C8.852,9.752,8.75,9.631,8.672,9.486C8.594,9.34,8.556,9.16,8.556,8.944c0-0.189,0.036-0.355,0.108-0.498c0.072-0.144,0.169-0.264,0.292-0.36c0.122-0.097,0.263-0.17,0.422-0.221c0.159-0.052,0.277-0.077,0.451-0.077V7.401h0.35v0.387c0.174,0,0.29,0.023,0.445,0.071c0.155,0.047,0.29,0.118,0.404,0.212c0.115,0.095,0.206,0.215,0.274,0.359c0.067,0.146,0.103,0.315,0.103,0.508H10.74c-0.007-0.201-0.06-0.354-0.154-0.46c-0.096-0.106-0.199-0.159-0.408-0.159v1.244c0.174,0.047,0.296,0.102,0.462,0.165c0.167,0.063,0.314,0.144,0.443,0.241c0.128,0.099,0.23,0.221,0.309,0.366c0.077,0.146,0.116,0.324,0.116,0.536C11.509,11.092,11.473,11.283,11.4,11.447 M18.675,4.795H1.326c-0.479,0-0.868,0.389-0.868,0.868v8.674c0,0.479,0.389,0.867,0.868,0.867h17.349c0.479,0,0.867-0.389,0.867-0.867V5.664C19.542,5.184,19.153,4.795,18.675,4.795M1.76,5.664c0.24,0,0.434,0.193,0.434,0.434C2.193,6.336,2,6.531,1.76,6.531S1.326,6.336,1.326,6.097C1.326,5.857,1.52,5.664,1.76,5.664 M1.76,14.338c-0.24,0-0.434-0.195-0.434-0.434c0-0.24,0.194-0.434,0.434-0.434s0.434,0.193,0.434,0.434C2.193,14.143,2,14.338,1.76,14.338 M18.241,14.338c-0.24,0-0.435-0.195-0.435-0.434c0-0.24,0.194-0.434,0.435-0.434c0.239,0,0.434,0.193,0.434,0.434C18.675,14.143,18.48,14.338,18.241,14.338 M18.675,12.682c-0.137-0.049-0.281-0.08-0.434-0.08c-0.719,0-1.302,0.584-1.302,1.303c0,0.152,0.031,0.297,0.08,0.434H2.981c0.048-0.137,0.08-0.281,0.08-0.434c0-0.719-0.583-1.303-1.301-1.303c-0.153,0-0.297,0.031-0.434,0.08V7.318c0.136,0.049,0.28,0.08,0.434,0.08c0.718,0,1.301-0.583,1.301-1.301c0-0.153-0.032-0.298-0.08-0.434H17.02c-0.049,0.136-0.08,0.28-0.08,0.434c0,0.718,0.583,1.301,1.302,1.301c0.152,0,0.297-0.031,0.434-0.08V12.682z M18.241,6.531c-0.24,0-0.435-0.194-0.435-0.434c0-0.24,0.194-0.434,0.435-0.434c0.239,0,0.434,0.193,0.434,0.434C18.675,6.336,18.48,6.531,18.241,6.531 M9.22,8.896c0,0.095,0.019,0.175,0.058,0.242c0.039,0.066,0.088,0.124,0.148,0.171c0.061,0.047,0.13,0.086,0.21,0.115c0.079,0.028,0.11,0.055,0.192,0.073V8.319c-0.21,0-0.322,0.044-0.437,0.132C9.277,8.54,9.22,8.688,9.22,8.896 M15.639,12.602h-0.868c-0.239,0-0.434,0.195-0.434,0.434c0,0.24,0.194,0.436,0.434,0.436h0.868c0.24,0,0.434-0.195,0.434-0.436C16.072,12.797,15.879,12.602,15.639,12.602 M10.621,10.5c-0.068-0.052-0.145-0.093-0.23-0.124c-0.086-0.031-0.123-0.06-0.212-0.082v1.374c0.209-0.016,0.332-0.076,0.465-0.186c0.134-0.107,0.201-0.281,0.201-0.516c0-0.11-0.02-0.202-0.062-0.277C10.743,10.615,10.688,10.551,10.621,10.5"></path>
+                                </svg>
+                               <span>currency</span>
+                            </p>
+                            <li class="dropdown__item">
+                                <a href="#" class="dropdown__link">EGP</a>
+                            </li>
+                            <li class="dropdown__item">
+                                <a href="#" class="dropdown__link">EUR</a>
+                            </li>
+
+                        </ul>
+                        <!--drop down-->
+                    </li>
+                    <li class="secondary-menu__item"  *ngIf="cart$ | async as cart" appClosest>
+                        <span class="secondary-menu__counter" *ngIf="cart.items?.length > 0">
+                            {{cart.items?.length}}
+                        </span>
+                        <svg class="secondary-menu__icon svg-icon" viewBox="0 0 20 20">
+                                <path  d="M18.037,18.517L16.787,4.646c-0.034-0.38-0.355-0.672-0.735-0.672h-2.1c-0.258-1.968-1.93-3.499-3.967-3.499c-2.039,0-3.71,1.531-3.967,3.499H3.921c-0.381,0-0.7,0.291-0.735,0.672L1.915,18.72c-0.02,0.206,0.049,0.411,0.19,0.564c0.138,0.152,0.338,0.241,0.545,0.241h14.67c0.012-0.002,0.02-0.002,0.03,0c0.408,0,0.738-0.331,0.738-0.738C18.088,18.692,18.07,18.601,18.037,18.517z M9.985,1.951c1.225,0,2.25,0.87,2.49,2.023h-4.98C7.735,2.821,8.76,1.951,9.985,1.951zM3.457,18.049l1.139-12.6h10.782l1.135,12.6H3.457z"></path>
+                        </svg>
+                        <!--drop down-->
+                        <ul class="dropdown">
+
+                            <ng-container *ngIf="cart.items?.length > 0 ; else cartEmpty">
+
+                                <div class="cart-item__container" >
+                                    <!--cart item-->
+                                    <div class="cart-item" *ngFor="let item of cart.items">
+                                        <div class="cart-item__info">
+                                            <div class="cart-item__image">
+                                                <img appImage="" [product]="item.variant.product" alt="product">
+                                            </div>
+                                            <div class="cart-item__details">
+                                                <a 
+                                                [routerLink]="['/', language['LANGUAGE_CODE'], 'collection', 'product',item.variant.product | translate: 'slug']" 
+                                                class="cart-item__name"> {{ item.variant.product | translate: 'name' }}</a>
+                                                <p class="cart-item__quantity">{{item.quantity}} x {{ item.total / item.quantity / 100 | currency: currencyCode}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="cart-item__delete">
+                                            <button class="delete" (click)="removeItem(item)">
+                                                <svg class="svg-icon" viewBox="0 0 20 20">
+                                                    <path  d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!--cart item-->
+                                </div>
+
+                                <div class="cart-item subtotal">
+                                    <p class="cart-item__subtotal">
+                                        {{language['subtotal']}}
+                                    </p>
+                                    <p class="cart-item__cost">
+                                        {{cart.itemsTotal / 100 | currency: currencyCode}}
+                                    </p>
+                                </div>
+                            </ng-container>
+
+                            <ng-template #cartEmpty>
+                                <div class="empty-cart">
+                                    <svg class="svg-icon" viewBox="0 0 20 20">
+                                        <path  d="M17.671,13.945l0.003,0.002l1.708-7.687l-0.008-0.002c0.008-0.033,0.021-0.065,0.021-0.102c0-0.236-0.191-0.428-0.427-0.428H5.276L4.67,3.472L4.665,3.473c-0.053-0.175-0.21-0.306-0.403-0.306H1.032c-0.236,0-0.427,0.191-0.427,0.427c0,0.236,0.191,0.428,0.427,0.428h2.902l2.667,9.945l0,0c0.037,0.119,0.125,0.217,0.239,0.268c-0.16,0.26-0.257,0.562-0.257,0.891c0,0.943,0.765,1.707,1.708,1.707S10,16.068,10,15.125c0-0.312-0.09-0.602-0.237-0.855h4.744c-0.146,0.254-0.237,0.543-0.237,0.855c0,0.943,0.766,1.707,1.708,1.707c0.944,0,1.709-0.764,1.709-1.707c0-0.328-0.097-0.631-0.257-0.891C17.55,14.182,17.639,14.074,17.671,13.945 M15.934,6.583h2.502l-0.38,1.709h-2.312L15.934,6.583zM5.505,6.583h2.832l0.189,1.709H5.963L5.505,6.583z M6.65,10.854L6.192,9.146h2.429l0.19,1.708H6.65z M6.879,11.707h2.027l0.189,1.709H7.338L6.879,11.707z M8.292,15.979c-0.472,0-0.854-0.383-0.854-0.854c0-0.473,0.382-0.855,0.854-0.855s0.854,0.383,0.854,0.855C9.146,15.596,8.763,15.979,8.292,15.979 M11.708,13.416H9.955l-0.189-1.709h1.943V13.416z M11.708,10.854H9.67L9.48,9.146h2.228V10.854z M11.708,8.292H9.386l-0.19-1.709h2.512V8.292z M14.315,13.416h-1.753v-1.709h1.942L14.315,13.416zM14.6,10.854h-2.037V9.146h2.227L14.6,10.854z M14.884,8.292h-2.321V6.583h2.512L14.884,8.292z M15.978,15.979c-0.471,0-0.854-0.383-0.854-0.854c0-0.473,0.383-0.855,0.854-0.855c0.473,0,0.854,0.383,0.854,0.855C16.832,15.596,16.45,15.979,15.978,15.979 M16.917,13.416h-1.743l0.189-1.709h1.934L16.917,13.416z M15.458,10.854l0.19-1.708h2.218l-0.38,1.708H15.458z"></path>
+                                    </svg>
+                                    <p class="empty-cart__text">{{language['emptyCart']}}</p>
+                                </div>
+                            </ng-template>
+
+                            <div class="cart-item subtotal">
+                                <a [routerLink]="['/',language['LANGUAGE_CODE'],'cart']" class="custom-button custom-button--default">{{language['cart']}}</a>
+                                <a [routerLink]="['/',language['LANGUAGE_CODE'],'checkout']" class="custom-button custom-button--checkout">{{language['checkout']}}</a>
+                            </div>
+
+
+                        </ul>
+                        <!--drop down-->
+                    </li>
+                </ul>
+                <!--secondary menu cart - setting -->
+
+                
+
+              </div>
+              <!--main navigation-->
+
+        </div>
+        <!--header__secondSide-->
+
+    </div>
+</header>
+      
+      
+      ',
+      "css": '
+      
+      @import "../../variables";
+
+// used for the header, checked border and the check mark background
+:host {
+
+  &.home-page{
+    .header{
+      position: absolute;
+      width: 100%;
+      background: transparent;
+    }
+  }
+
+
+  .header{
+    background: $focusBackground;
+    border-bottom: 1px solid $border-color;
+    position: relative;
+    z-index: 2;
+    transition: transform .3s ease-in;
+
+    &.scrolled{
+      position: fixed;
+      top:0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 1040;
+      animation: fixedHeader .5s;
+      animation-fill-mode	: forwards;
+      border-bottom: none;
+      background: $focusBackground;
+      .header__top{
+        display: none;
+      }
+      .header__firstSide{
+        padding: 0 1.25rem;
+      }
+    }
+   
+
+    &__firstSide{
+      flex : 0 0 auto;
+      width:20%;
+      @media(max-width:767px){
+        width: 35%;
+      }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-inline-end:1px solid $border-color;
+      padding: 1.25rem;
+      .header__logo{
+        max-height: 40px;
+        display: flex;
+        align-items: center;
+        img{
+          max-height: 40px;
+          max-width: 120px;
+          @media(max-width: 575px){
+            max-height: 40px;
+          }
+
+          @media(max-width:400px){
+            max-width: 85px;
+          }
+        }
+      }
+    }
+
+    &__secondSide{
+      flex : 0 0 auto;
+      width: 80%;
+      @media(max-width:767px){
+        width: 65%;
+      }
+    }
+
+    &__top{
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      border-bottom:1px solid $border-color;
+
+    }
+
+    &__userLinks{
+      position: relative;
+
+
+      @media(max-width: 991px){
+        height: 47px;
+        width: 45px;
+      }
+
+      .custom-button{
+        svg{
+          fill:$white;
+          width: 2.3rem;
+          height: 2.3rem;
+        }
+        @media(min-width: 992px){
+          display: none;
+        }
+      }
+      .userMenu{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        @media(max-width: 991px){
+          position: absolute;
+          top:100%;
+          background: $white;
+          right: 0;
+          z-index: 3;
+          width:110px;
+          opacity: 0;
+          visibility: hidden;
+          padding: 1rem 0;
+          transition: opacity .3s ease-in-out,
+          visibility .3s ease-in-out;
+          box-shadow: 0 0 3px 2px rgba(0,0,0,.1);
+
+          &::before{
+            content:"";
+            display: block;
+            width: 0;
+            height: 0;
+            border:10px solid transparent;
+            border-bottom-color: $white;
+            position: absolute;
+            top: -20px;
+            right: 13px;
+             [dir=rtl] & {
+              right: unset;
+              left: 13px;
+            }
+          }
+          [dir=rtl] & {
+            right: unset;
+            left: 0;
+          }
+        }
+
+        &__userList{
+          display: inline-flex;
+          margin-inline-end: 2.5rem;
+          @media(max-width: 991px){
+            display: flex;
+            margin-inline-end: 0;
+            padding: 1rem;
+            &:hover{
+                background: $mainColor;
+            }
+          }
+        }
+
+        &__userLink{
+          text-transform: uppercase;
+          font-size: 1.3rem;
+          font-family: $Oswald;
+          color:$linkColorLight;
+          transition: color .3s ease-in-out;
+
+          @media(max-width: 991px){
+            color:$focusBackground;
+            display: flex;
+            width: 100%;
+            justify-content: center;
+          }
+
+          &:hover{
+            text-decoration: none;
+            color:$white;
+            @media(max-width: 991px){
+              color:$focusBackground;
+            }
+          }
+        }
+      }
+
+      &.active{
+        .userMenu{
+          visibility: visible;
+          opacity: 1;
+        }
+      }
+
+    }
+
+
+    &__mainNavigation{
+      border-inline-end:1px solid $border-color;
+      display: flex;
+      justify-content: space-between;
+
+      .blackLayer{
+        @media(max-width: 991px){
+          position: fixed;
+          background: rgba(0,0,0,.6);
+          width: 100vw;
+          height: 100vh;
+          left: 0;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 0;
+          visibility: hidden;
+          z-index: 3;
+          transition : visibility .3s ease-in-out,
+          opacity .3s ease-in-out;
+        }
+          //show navigation
+          &.active{
+            opacity: 1;
+            visibility: visible;
+            .menu-container{
+              transform: translateX(0);
+              [dir=rtl] & {
+                transform: translateX(0);
+              }
+          }
+          //show navigation
+
+        }
+
+        .menu-container{
+          @media(max-width: 991px){
+            height: 100vh;
+            width: 250px;
+            background: $blackColor;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+            transform: translateX(-100%);
+            transition:transform .3s ease-in-out;
+
+            [dir=rtl] & {
+              transform: translateX(100%);
+            }
+
+          }
+        }
+
+      }
+
+      //button
+      .custom-button--responsiveButton{
+        @media(min-width: 992px){
+          display: none;
+        }
+        svg{
+          fill:$white;
+        }
+
+
+      }
+      //button
+
+      //secondary menu
+      .secondary-menu{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        // border-inline-start:1px solid $border-color;
+        display: flex;
+        min-width: 269px;
+        justify-content: flex-end;
+
+        @media(max-width:991px){
+          min-width: auto;
+        }
+
+        &__item{
+          display:flex;
+          min-width: 100px;
+          @media(max-width:575px){
+            min-width: 44px;
+          }
+          position: relative;
+          cursor: pointer;
+          border-inline-start:1px solid $border-color;
+          &:first-child{
+            border-inline-start:none;
+          }
+          justify-content: center;
+          align-items: center;
+
+          &.active{
+            .dropdown{
+              opacity: 1;
+              visibility: visible;
+              transform: translateY(0);
+              @media(max-width:991px){
+                &::before{
+                  display: block !important;
+                }
+               }
+            }
+          }
+
+          &.site-setting{
+            .dropdown{
+              width: 170px;
+              padding: 1rem 0;
+            }
+          }
+
+        }
+
+
+        &__icon{
+          fill:$white;
+          width:2.3rem;
+          height: 2.3rem;
+        }
+
+        &__counter{
+          position: absolute;
+          width:15px;
+          height: 15px;
+          background: red;
+          color:$white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.1rem;
+          font-weight: 700;
+          top: 5px;
+          top: 15px;
+          left: 50%;
+           [dir=rtl]  & {
+            left: unset;
+            right: 50%;
+          }
+
+        }
+
+        //dropdown in secondary menu
+        .dropdown{
+          width:270px;
+          right:0;
+          left:unset;
+          box-shadow: $boxShadow;
+          opacity: 0;
+          visibility: hidden;
+          transform:translateY(50px);
+          padding: 1rem 2rem;
+          background: $white;
+
+          @media(max-width:991px){
+            &::before{
+              display: block !important;
+            }
+          }
+
+          [dir=rtl] & {
+            right: unset;
+            left: 0;
+          }
+
+          &__link{
+            color:$focusBackground;
+          }
+         
+          &::before{
+            right: 39px;
+            left:unset;
+            @media(max-width:575px){
+              right: 11px;
+            }
+
+             [dir=rtl] & {
+              right: unset;
+              left:39px;
+              @media(max-width:575px){
+                left: 11px;
+              }
+            }
+          }
+
+        }
+        //dropdown in secondary menu
+
+        //cart item container
+        .cart-item__container{
+          max-height: 250px;
+          overflow-y: auto;
+        }
+        //cart item container
+
+        //cart item
+        .cart-item{
+          display: flex;
+          flex-wrap: wrap;
+          padding:1.5rem 0;
+          border-bottom: 1px solid rgb(241, 241, 241);
+          &:last-child{
+            margin-bottom: 0;
+          }
+
+          &.subtotal{
+            justify-content: space-between;
+          }
+
+          &__info{
+            flex : 0 0 85%;
+            display: flex;
+          }
+
+
+          &__details{
+            margin-inline-start: 1rem;
+            text-align: start;
+          }
+
+          &__image{
+            height: 50px;
+            img{
+              height: 50px;
+              width: auto;
+            }
+          }
+
+          &__name{
+            text-transform: capitalize;
+            color:$textColorDark;
+            font-size: 1.4rem;
+            margin-bottom: .5rem;
+            font-family: $openSans;
+            font-weight: 600;
+            &:hover{
+              text-decoration: underline;
+            }
+          }
+
+          &__quantity{
+            font-size: 1.3rem;
+            font-family: $openSans;
+            color:$darkGray;
+            direction: ltr;
+            [dir=rtl] & { 
+              text-align: end;
+            }
+          }
+
+          &__delete{
+            flex : 0 0 15%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            .delete{
+              background: transparent;
+              border: none;
+              .svg-icon{
+                width: 1.5rem;
+                height: 1.5rem;
+              }
+            }
+          }
+
+          &__subtotal{
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            font-weight: 600;
+            font-family: $openSans;
+          }
+          &__cost{
+            font-size: 1.5rem;
+            font-weight: 600;
+            font-family: $openSans;
+            color:$mainFontColor;
+          }
+
+        }
+        //cart item
+
+        //cart-empty
+
+        .empty-cart{
+          text-align: center;
+          svg{
+            width:5rem;
+            height: 5rem;
+            fill:$mainColor;
+          }
+          &__text{
+            font-weight: 600;
+            font-family: $openSans;
+            font-size: 1.3rem;
+          }
+        }
+
+       
+      }
+      //secondary menu
+
+    }
+
+    //drop down style
+    .dropdown{
+      position: absolute;
+      top:100%;
+      background: $white;
+      padding: 0;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      margin: 0;
+      list-style: none;
+      width:275px;
+      left: 0;
+      box-shadow: $boxShadow;
+      opacity: 0;
+      visibility: hidden;
+      transform:translateY(50px);
+      transition: opacity .3s ease-in-out,
+      visibility .2s ease-in-out,
+      transform .3s ease-in-out;
+
+      @media(max-width:991px){
+        background: $blackColor;
+      }
+
+
+      [dir=rtl] & {
+        left:unset;
+        right:0;
+      }
+
+      &__item{
+        padding-left: 1rem;
+        padding-right: 1rem;
+
+        // dropdown item  with child
+        &.has-child{
+          position: relative;
+          &:after{
+            content: "\f054 ";
+            position: absolute;
+            top:50%;
+            transform : translateY(-50%) rotate(0);
+            font-family: "FontAwesome";
+            color:$textColor;
+            transition: color .3s ease-in-out;
+            right: 20px;
+            font-size: 9px;
+            transition: transform .3s ease-in-out;
+             [dir=rtl] & {
+              right:unset;
+              left: 20px;
+              content: "\f053 ";
+            }
+
+            @media(max-width: 991px){
+              top:1.8rem;
+              width: 40px;
+              height: 30px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 11px;
+            }
+
+          }
+
+          &.active{
+            &:after{
+              @media(max-width:991px){
+                transform : translateY(-50%) rotate(90deg);
+                [dir=rtl] & {
+                transform : translateY(-50%) rotate(-90deg);
+                }
+              }
+            }
+          }
+        }
+        //dropdown item child
+
+
+        //drop down on drop down item
+        .dropdown{
+
+          @media(max-width:991px){
+            max-height:0;
+            position: relative !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+            width: 250px;
+            max-height: 0;
+            overflow: hidden;
+            padding-top: 0;
+            padding-bottom: 0;
+            transition: all .3s ease-in-out;
+            left:unset;
+            top:unset;
+          }
+
+          &::before{
+            display: none;;
+          }
+          left:100%;
+          top:-1rem;
+           [dir=rtl] & {
+            left: unset;
+            right: 100%;
+            @media(max-width:991px){
+              right:unset;
+            }
+          }
+          
+        }
+        //drop down on item
+
+        // item with active class
+        &.active{
+            & > .dropdown {
+                max-height: 1000px;
+            }
+        }
+        // item with active class
+
+        // item with hover
+        &:hover{
+
+          & > .dropdown__link {
+              @media(min-width:992px){
+                text-decoration: none;
+                color:$focusBackground;
+                background: $mainColor;
+              }
+          }
+          &:after{
+            @media(min-width:992px){
+              color:$focusBackground;
+            }
+            color:$white;
+          }
+          & > .dropdown{
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+          }
+
+        }
+        // item with hover
+
+
+      }
+      //LINK
+      &__link{
+        display: block;
+        padding: .7rem 1rem;
+        transition: background .25s;
+        color: $textColor;
+        font-size: 1.3rem;
+        font-weight: 600;
+        white-space: nowrap;
+        text-decoration: none;
+        font-family: $openSans;
+        text-transform: capitalize;
+        text-align: start;
+
+        &:hover{
+          @media(min-width: 992px){
+            background: $mainColor;
+            color:$focusBackground;
+          }
+        }
+        
+        @media(max-width:991px){
+          color: $white;
+          font-size: 1.4rem;
+        }
+        
+      }
+
+      &::before{
+        content: "";
+        width:0;
+        height: 0;
+        border:10px solid transparent;
+        border-bottom-color:$white;
+        position: absolute;
+        top:-20px;
+        left: 20px;
+        [dir=rtl] & {
+          left:unset;
+          right:20px;
+        }
+
+        @media(max-width:991px){
+         display: none;
+        }
+      }
+
+      &__title{
+        font-size: 1.3rem;
+        font-weight: 600;
+        padding: 0 1rem;
+        text-transform: capitalize;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        color:$focusBackground;
+        span{
+          margin-inline-start: 1rem;
+          color:$focusBackground;
+        }
+        svg{
+          fill:$focusBackground;
+        }
+
+      }
+
+    }
+    //drop down style
+
+    &__primaryMenu{
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      @media(max-width:991px){
+        width: 250px;
+        height: calc(100vh - 3rem);
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      &__list{
+        display: inline-flex;
+        margin-inline-end: 2.5rem;
+        position: relative;
+
+        @media(max-width:991px){
+          display: flex;
+          margin-inline-end:0;
+          flex-direction: column;
+        }
+
+        &.has-child{
+          position: relative;
+          &:after{
+            content: "\f078";
+            position: absolute;
+            top:50%;
+            transform : translateY(-50%) rotate(0);
+            font-family: "FontAwesome";
+            color:$white;
+            transition: color .3s ease-in-out,
+            transform .3s ease-in-out;
+            right: -5px;
+            font-size: 9px;
+            @media(max-width:991px){
+              top: 2.3rem;
+              right: 5px;
+              transform: translateY(-50%) rotate(-90deg);
+              width: 40px;
+              height: 30px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              [dir=rtl] & {
+                transform: translateY(-50%) rotate(90deg);
+              }
+            }
+             [dir=rtl]  & {
+              right:unset;
+              left: -5px;
+              @media(max-width:991px){
+                top:2.3rem;
+                right:unset;
+                left:  5px;
+              }
+            }
+          }
+
+          &.active{
+            &:after{
+              transform : translateY(-50%) rotate(0);
+            }
+          }
+         
+        }
+
+        &:first-child{
+          .header__primaryMenu__link{
+            padding-inline-start: 1.25rem;
+            // @media(max-width:991px){
+            //   padding-inline-start: 0;
+            // }
+          }
+        }
+
+        //first level drop down
+        & > .dropdown{
+          @media(max-width:991px){
+            position: relative !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+            width: 250px;
+            max-height: 0;
+            overflow: hidden;
+            padding-top: 0;
+            padding-bottom: 0;
+            transition: all .3s ease-in-out;
+           }
+        }
+        //first level drop down
+
+      
+
+        &:hover{
+          & > .header__primaryMenu__link {
+              text-decoration: none;
+              color:$linkColor;
+          }
+          &:after{
+            color:$mainColor;
+          }
+
+          & > .dropdown{
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        &.active{
+          .header__primaryMenu__link{
+            color:$linkColor;
+          }
+
+          & > .dropdown {
+            max-height: 1000px;
+          }
+        }
+        
+
+      }
+
+      &__link{
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        font-family: $Oswald;
+        color:$white;
+        transition: color .3s ease-in-out;
+        padding: 1.25rem;
+        text-align: start;
+
+        @media(min-width:992px){
+          padding-inline-start: 0;
+        }
+      }
+
+    }
+
+    
+    
+  }
+}
+
+@keyframes fixedHeader{
+  0%{
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+      
+      
+      
+      '
+    }
+  ,
+ 
+}
